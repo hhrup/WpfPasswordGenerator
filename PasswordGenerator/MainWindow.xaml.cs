@@ -1,17 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PasswordGenerator
 {
@@ -32,88 +22,53 @@ namespace PasswordGenerator
         //These include punctuation or technical, mathematical characters.
         //ASCII also includes the space(a non - visible but printable character), and,
         //therefore, does not belong to the control characters category, as one might suspect.
+        // 32 je space, 
+        // 33 !   // 58 :     // 123 {
+        // 34 "   // 59 ;     // 124 |
+        // 35 #   // 60 <     // 125 }
+        // 36 $   // 61 =     // 126 ~
+        // 37 %   // 62 >     //
+        // 38 &   // 63 ?
+        // 39 '   // 64 @
+        // 40 (   //
+        // 41 )   // 91 [
+        // 42 *   // 92 \
+        // 43 +   // 93 ]
+        // 44 ,   // 94 ^
+        // 45 -   // 95 _
+        // 46 .   // 96 `
+        // 47 /   //
 
-        //Numbers(30–39): These numbers include the ten Arabic numerals from 0 - 9.
+        //Numbers(48–57): These numbers include the ten Arabic numerals from 0 - 9.
 
         //Letters(65–90 / 97–122):
         //Letters are divided into two blocks,
         //with the first group containing the uppercase letters(65-90) and the second group containing the lowercase(97–122).
 
         private int _isNumber;
-        public List<char> ASCII { get; set; }
+        public List<char> AsciiList { get; set; }
+        public List<char> AddedAsciiCharsForGeneratorList { get; set; }
         public MainWindow()
         {
             InitializeComponent();
 
-            if (UseSmallLetters.IsChecked.Value)
-            {
-                UseBigAndSmallLetters.IsChecked = false;
-            }
+            AsciiList = new List<char>();
+            AddedAsciiCharsForGeneratorList = new List<char>();
 
-            ASCII = new List<char>();
             for (int i = 32; i < 127; i++)
             {
                 var c = (char)i;
-                ASCII.Add(c);
+                AsciiList.Add(c);
             }
         }
 
-        public static string CreatePasswordAllChars(int length)
+        public static string GeneratePassword(int length, List<char> list)
         {
-            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             StringBuilder res = new StringBuilder();
             Random rnd = new Random();
             while (0 < length--)
             {
-                res.Append(valid[rnd.Next(valid.Length)]);
-            }            
-            return res.ToString();
-        }
-
-        public static string CreatePasswordNumbersOnly(int length)
-        {
-            const string valid = "1234567890";
-            StringBuilder res = new StringBuilder();
-            Random rnd = new Random();
-            while (0 < length--)
-            {
-                res.Append(valid[rnd.Next(valid.Length)]);
-            }
-            return res.ToString();
-        }
-
-        public static string CreatePasswordNumbersSmallLetters(int length)
-        {
-            const string valid = "abcdefghijklmnopqrstuvwxyz1234567890";
-            StringBuilder res = new StringBuilder();
-            Random rnd = new Random();
-            while (0 < length--)
-            {
-                res.Append(valid[rnd.Next(valid.Length)]);
-            }
-            return res.ToString();
-        }
-
-        public static string CreatePasswordBigAndSmallLetters(int length)
-        {
-            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            StringBuilder res = new StringBuilder();
-            Random rnd = new Random();
-            while (0 < length--)
-            {
-                res.Append(valid[rnd.Next(valid.Length)]);
-            }
-            return res.ToString();
-        }
-
-        public static string CreatePasswordSmallLetters(int length)
-        {
-            const string valid = "abcdefghijklmnopqrstuvwxyz";
-            StringBuilder res = new StringBuilder();
-            Random rnd = new Random();
-            while (0 < length--)
-            {
-                res.Append(valid[rnd.Next(valid.Length)]);
+                res.Append(list[rnd.Next(list.Count)]);
             }
             return res.ToString();
         }
@@ -124,34 +79,47 @@ namespace PasswordGenerator
 
             if (_isNumber == 0)
             {
-                MessageBox.Show("Input Error, Integer Input you must!\n\nQuote from: 'Master Yoda'!");
+                MessageBox.Show("The cautious seldom err! Enter password length. \n\nQuote from: 'Confucius'!");
+                return;
             }
-            else if (!UseNumbers.IsChecked.Value && !UseSmallLetters.IsChecked.Value && !UseBigAndSmallLetters.IsChecked.Value)
+            if (!UseAll.IsChecked.Value && !UseNumbers.IsChecked.Value && !UseSmallLetters.IsChecked.Value
+                    && !UseCapitalLetters.IsChecked.Value && !UseSymbols.IsChecked.Value && !UseSpaceCharacter.IsChecked.Value)
             {
                 MessageBox.Show("Check some box you must mmmMmmM\n\nQuote from: 'Master Yoda'!");
+                return;
             }
-            else if (UseNumbers.IsChecked.Value && UseBigAndSmallLetters.IsChecked.Value
-                || (UseNumbers.IsChecked.Value && UseBigAndSmallLetters.IsChecked.Value && UseSmallLetters.IsChecked.Value))
+
+            if (UseAll.IsChecked.Value)
+                PasswordOutput.Text = GeneratePassword(_isNumber, AsciiList.GetRange(1, AsciiList.Count-1));
+            else 
             {
-                PasswordOutput.Text = CreatePasswordAllChars(int.Parse(InputBox.Text));
+                if (UseNumbers.IsChecked.Value)
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(16, 10));
+                if (UseSmallLetters.IsChecked.Value)
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(65, 25));
+                if (UseCapitalLetters.IsChecked.Value)
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(33, 25));
+                if (UseSymbols.IsChecked.Value)
+                {
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(1, 15));
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(26, 7));
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(60, 5));
+                    AddedAsciiCharsForGeneratorList.AddRange(AsciiList.GetRange(91, 4));
+                }
+                if (UseSpaceCharacter.IsChecked.Value)
+                    AddedAsciiCharsForGeneratorList.Add(AsciiList[0]);
+
+                PasswordOutput.Text = GeneratePassword(_isNumber, AddedAsciiCharsForGeneratorList);
+                AddedAsciiCharsForGeneratorList.Clear();
             }
-            else if (UseNumbers.IsChecked.Value && UseSmallLetters.IsChecked.Value)
-            {
-                PasswordOutput.Text = CreatePasswordNumbersSmallLetters(int.Parse(InputBox.Text));
-            }
-            else if (UseSmallLetters.IsChecked.Value && !UseBigAndSmallLetters.IsChecked.Value)
-            {
-                PasswordOutput.Text = CreatePasswordSmallLetters(int.Parse(InputBox.Text));
-            }
-            else if (UseNumbers.IsChecked.Value)
-            {
-                PasswordOutput.Text = CreatePasswordNumbersOnly(int.Parse(InputBox.Text));
-            }
-            else if (UseBigAndSmallLetters.IsChecked.Value || (UseSmallLetters.IsChecked.Value && UseBigAndSmallLetters.IsChecked.Value))
-            {
-                PasswordOutput.Text = CreatePasswordBigAndSmallLetters(int.Parse(InputBox.Text));
-            }           
-                                         
+            //Bools:
+            //UseAll
+            //UseNumbers
+            //UseSmallLetters
+            //UseCapitalLetters
+            //UseSymbols
+            //UseSpaceCharacter
+
         }
 
         private void CopyToClipboard_Click(object sender, RoutedEventArgs e)

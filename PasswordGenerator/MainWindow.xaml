@@ -16,10 +16,64 @@
             <TextBlock TextWrapping="Wrap" Text="Enter the length of a password!" Margin="5" HorizontalAlignment="Center" FontSize="15"/>
             <TextBox x:Name="InputBox" Padding="3" Margin="5" Width="50" HorizontalAlignment="Center"/>
 
-            <CheckBox x:Name="UseNumbers" IsChecked="True" HorizontalAlignment="Center" Content="Use Numbers" Margin="3"/>
-            <CheckBox x:Name="UseSmallLetters" IsChecked="False" HorizontalAlignment="Center" Content="Use small letters" Margin="3"/>
-            <CheckBox x:Name="UseBigAndSmallLetters" IsChecked="True" HorizontalAlignment="Center" Content="Use big and small letters" Margin="3"/>
-            <CheckBox x:Name="UseSymbols" IsChecked="False" HorizontalAlignment="Center" Content="Use symbols" Margin="3"/>
+            <CheckBox x:Name="UseAll" IsChecked="False" HorizontalAlignment="Center" Content="All, space excluded" Margin="4" Width="140"/>
+            <CheckBox x:Name="UseNumbers" HorizontalAlignment="Center" Content="Numbers" Margin="4" Width="140">
+                <CheckBox.Style>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="IsEnabled" Value="True"></Setter>
+                        <Setter Property="IsChecked" Value="False"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked,ElementName=UseAll}" Value="True">
+                                <Setter Property="IsChecked" Value="True"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </CheckBox.Style>
+            </CheckBox>
+            <CheckBox x:Name="UseSmallLetters" HorizontalAlignment="Center" Content="Small letters" Margin="4" Width="140">
+                <CheckBox.Style>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="IsEnabled" Value="True"></Setter>
+                        <Setter Property="IsChecked" Value="False"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked,ElementName=UseAll}" Value="True">
+                                <Setter Property="IsChecked" Value="True"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </CheckBox.Style>
+            </CheckBox>
+            <CheckBox x:Name="UseCapitalLetters" HorizontalAlignment="Center" Content="Capital letters" Margin="4" Width="140">
+                <CheckBox.Style>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="IsEnabled" Value="True"></Setter>
+                        <Setter Property="IsChecked" Value="False"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked,ElementName=UseAll}" Value="True">
+                                <Setter Property="IsChecked" Value="True"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </CheckBox.Style>
+            </CheckBox>
+            <CheckBox x:Name="UseSymbols" HorizontalAlignment="Center" Content="Symbols" Margin="4" Width="140">
+                <CheckBox.Style>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="IsEnabled" Value="True"></Setter>
+                        <Setter Property="IsChecked" Value="False"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked,ElementName=UseAll}" Value="True">
+                                <Setter Property="IsChecked" Value="True"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </CheckBox.Style>
+            </CheckBox>
+            <CheckBox x:Name="UseSpaceCharacter" IsChecked="False" HorizontalAlignment="Center" Content="Space character" Margin="4" Width="140"/>
 
             <!--Generate Button-->
             <Button x:Name="GeneratePasswordBtn" Click="GeneratePasswordBtn_Click" Content="GENERATE" HorizontalAlignment="Center" Width="100" Height="30" Margin="5"/>
